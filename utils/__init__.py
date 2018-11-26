@@ -15,5 +15,29 @@ def get_unique_values(file_paths, col_name, **kwargs):
     return df[col_name].unique()
 
 
+def get_activities(file_path, columns=["activity", "pc", "date"]):
+    """
+    :param file_path: str: path to the file
+    :param columns: list of str: headers to be included in activities
+    :return: dict: data
+    """
+    df = pandas.read_csv(file_path)
+    # Initialise the dictionary
+    data = {}
+    # Iterate through the rows
+    for _, row in df.iterrows():
+        user = row["user"]
+        # If user is not in data, add user to data
+        if user not in data:
+            data.update({user: {"activities": []}})
+        # For each item in columns, append a dictionary of the data to the activities list
+        for item in columns:
+            data[user]["activities"].append({item: row[item]})
+    return data
+
+
 if __name__ == "__main__":
-    print(get_unique_values(["data/1.csv", "data/2.csv"], "user_id", sep=","))
+    # print(get_unique_values(["data/1.csv", "data/2.csv"], "user_id", sep=","))
+    print(get_activities("../data/haystack_file.csv"))
+
+
