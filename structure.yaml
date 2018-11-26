@@ -1,0 +1,14 @@
+user_id:
+    employee_name:
+    psychometrics:
+        openness:
+        conscientiousness:
+        extraversion:
+        agreeableness:
+        neuroticism:
+    activities:
+        -   type:
+            device:
+            date:
+            pc:
+
