@@ -11,7 +11,7 @@ def get_unique_values(file_paths, col_name, **kwargs):
     df = pandas.DataFrame(columns=[col_name])
     for path in file_paths:
         tmp = pandas.read_csv(path, **kwargs)
-        df = df.append(tmp, ignore_index=True)
+        df = df.append(tmp, ignore_index=True, sort=False)
     return df[col_name].unique()
 
 
