@@ -22,6 +22,7 @@ def get_activities(file_path, columns=["activity", "pc", "date"]):
     :return: dict: data
     """
     df = pandas.read_csv(file_path)
+    df = df.head()
     # Initialise the dictionary
     data = {}
     # Iterate through the rows
@@ -30,9 +31,10 @@ def get_activities(file_path, columns=["activity", "pc", "date"]):
         # If user is not in data, add user to data
         if user not in data:
             data.update({user: {"activities": []}})
-        # For each item in columns, append a dictionary of the data to the activities list
-        for item in columns:
-            data[user]["activities"].append({item: row[item]})
+        # For each item in columns, get a dictionary of the data for the user
+        d = {item: row[item] for item in columns}
+        # Append the data to the user activities
+        data[user]["activities"].append(d)
     return data
 
 
