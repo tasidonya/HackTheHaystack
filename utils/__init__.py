@@ -16,6 +16,7 @@ class EmailFeatures(object):
         self.calculate_combined_feature()
 
     def get_email(self):
+        print("Fetching data and computing features...")
         pattern = '%m/%d/%Y %H:%M:%S'
         columns = ["epoch"] + self.features
         df = pd.read_csv(self.file_path)
@@ -41,19 +42,22 @@ class EmailFeatures(object):
             tmp = pd.DataFrame([[epoch, f1, f2, f3]], columns=columns)
             data[row.user] = data[row.user].append(tmp)
         self.data = data
+        print("Done")
 
     def sort_data(self):
         """
-        :param data:
         :return:
         """
+        print("Sorting Data...")
         for user, item in self.data.items():
             self.data[user] = item.sort_values(by=["epoch"])
+        print("Done")
 
     def normalise_data(self):
         """
         :return:
         """
+        print("Normalising Data...")
         maximum = [0 for _ in self.features]
         for user, df in self.data.items():
             for i, (col, m) in enumerate(zip(self.features, maximum)):
@@ -63,6 +67,7 @@ class EmailFeatures(object):
         for user, df in self.data.items():
             for col, m in zip(self.features, maximum):
                 df[col] /= m
+        print("Done")
 
     @staticmethod
     def get_email_freq(df):
@@ -119,12 +124,14 @@ class EmailFeatures(object):
         """
         :return:
         """
+        print("Calculating combined feature")
         for user, df in self.data.items():
             f_scores = []
             for _, row in df.iterrows():
                 f_values = [row[f_name] for f_name in self.features]
                 f_scores.append(self.get_f(np.array(f_values)))
             self.data[user]["F"] = pd.Series(f_scores, index=df.index)
+        print("Done")
 
     def get(self):
         return self.data
