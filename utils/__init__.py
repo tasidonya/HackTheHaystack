@@ -7,16 +7,6 @@ import matplotlib.pyplot as plt
 from flags.filepath import *
 
 
-class UserName(object):
-
-    def __init__(self, file_path):
-        df = pd.read_csv(file_path)
-        self.user_dict = {row.user_id: row.employee_name for _, row in df.iterrows()}
-
-    def get(self):
-        return self.user_dict
-
-
 class EmailFeatures(object):
 
     def __init__(self, file_path, nrows=None, weight=None):
@@ -217,13 +207,11 @@ class EmailFeatures(object):
 
 
 if __name__ == "__main__":
-
-    names = UserName(SC1_PSYCHO).get()
     email_features = EmailFeatures(SC1_EMAIL, nrows=10000)
     data = email_features.get()
     for user, d in data.items():
         if d.F.max() > 0.03:
-            plt.plot(d.epoch, d.F, label=names[user])
+            plt.plot(d.epoch, d.F, label=user)
     plt.legend()
     plt.show()
 
