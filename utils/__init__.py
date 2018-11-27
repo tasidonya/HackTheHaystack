@@ -4,6 +4,8 @@ import time
 import re
 import matplotlib.pyplot as plt
 
+from flags.filepath import *
+
 
 class UserName(object):
 
@@ -17,8 +19,9 @@ class UserName(object):
 
 class EmailFeatures(object):
 
-    def __init__(self, file_path, nrows=None):
+    def __init__(self, file_path, nrows=None, weight=None):
         self.features = ["f1", "f2", "f3", "f4", "f5"]
+        self.weight = weight
         self.data = None
         self.file_path = file_path
         self.get_email(nrows=nrows)
@@ -190,7 +193,7 @@ class EmailFeatures(object):
         for user, df in self.data.items():
             f_scores = []
             for _, row in df.iterrows():
-                f_values = [row[f_name] for f_name in self.features]
+                f_values = [row[f_name] for f_name in ["f2", "f3", "f4", "f5"]]
                 f_scores.append(self.get_f(np.array(f_values)))
             self.data[user]["F"] = pd.Series(f_scores, index=df.index)
         print("Done")
@@ -214,16 +217,15 @@ class EmailFeatures(object):
 
 
 if __name__ == "__main__":
-    email_features = EmailFeatures("../data/haystack_email.csv", nrows=10000)
+
+    names = UserName(SC1_PSYCHO).get()
+    email_features = EmailFeatures(SC1_EMAIL, nrows=10000)
     data = email_features.get()
-    i = 0
     for user, d in data.items():
-        # plt.plot(d.epoch, d.freq)
-        print(d)
-        i += 1
-        if i == 100:
-            break
-    # plt.show()
+        if d.F.max() > 0.03:
+            plt.plot(d.epoch, d.F, label=names[user])
+    plt.legend()
+    plt.show()
 
 
 
