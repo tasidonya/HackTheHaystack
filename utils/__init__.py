@@ -18,7 +18,7 @@ class UserName(object):
 class EmailFeatures(object):
 
     def __init__(self, file_path, nrows=None):
-        self.features = ["f1", "f2", "f3", "f4"]
+        self.features = ["f1", "f2", "f3", "f4", "f5"]
         self.data = None
         self.file_path = file_path
         self.get_email(nrows=nrows)
@@ -50,9 +50,10 @@ class EmailFeatures(object):
             f3 = row["size"]
             # Get email address similarity score
             f4 = self.compute_similarity(row["from"], row["to"].split(";"))
+            f5 = 1 / len(row.content) if len(row.content) > 0 else np.inf
             epoch = int(time.mktime(time.strptime(row.date, pattern)))
             # Make a temporary data frame to append to the main data frame
-            tmp = pd.DataFrame([[epoch, f1, f2, f3, f4]], columns=columns)
+            tmp = pd.DataFrame([[epoch, f1, f2, f3, f4, f5]], columns=columns)
             data[row.user] = data[row.user].append(tmp)
         self.data = data
         print("Done")
@@ -213,14 +214,14 @@ class EmailFeatures(object):
 
 
 if __name__ == "__main__":
-    email_features = EmailFeatures("../data/haystack_email.csv", nrows=1000)
+    email_features = EmailFeatures("../data/haystack_email.csv", nrows=10000)
     data = email_features.get()
     i = 0
     for user, d in data.items():
         # plt.plot(d.epoch, d.freq)
         print(d)
         i += 1
-        if i == 50:
+        if i == 100:
             break
     # plt.show()
 
