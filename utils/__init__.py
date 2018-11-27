@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 import time
 import re
-import matplotlib.pyplot as plt
-
-from flags.filepath import *
 
 
 class EmailFeatures(object):
@@ -205,9 +202,11 @@ class EmailFeatures(object):
                 data.append(sample)
         return data
 
-
+"""
 if __name__ == "__main__":
-    email_features = EmailFeatures(SC1_EMAIL, nrows=10000)
+    import matplotlib.pyplot as plt
+
+    email_features = EmailFeatures("haystack_email.csv", nrows=10000)
     data = email_features.get()
     for user, d in data.items():
         if d.F.max() > 0.03:
@@ -217,3 +216,4 @@ if __name__ == "__main__":
 
 
 
+"""

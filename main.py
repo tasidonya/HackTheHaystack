@@ -1,28 +1,22 @@
 import argparse
-import pandas as pd
-import csv
-import yaml
-from .flags.filepath import *
+import matplotlib.pyplot as plt
 
-from utils import *
-
-file_paths = ["data/haystack_psychometric.csv"]
-
-user_ids = get_unique_values(file_paths, "user_id", sep=",")
-
-print(user_ids)
+from utils import EmailFeatures
 
 
-psychometrics = pd.read_csv(SC1_PSYCHO)
+def main(args):
+    email_features = EmailFeatures(args.path, nrows=int(args.nrows))
+    data = email_features.get()
+    for user, d in data.items():
+        if d.F.max() > args.threshold:
+            plt.plot(d.epoch, d.F, label=user)
+    plt.legend()
+    plt.show()
 
-users = {}
-for index, row in psychometrics.iterrows():
-    users[row["user_id"]] = {"employee_name": row["employee_name"],
-                             "pyschometric": {"openness": row["O"],
-                                              "conscientiousness": row["C"],
-                                              "extraversion": row["E"],
-                                              "agreeableness": row["A"],
-                                              "neuroticism": row["N"]}}
 
-with open("test.yaml", 'w') as f:
-    yaml.dump(users, f)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--path", type=str, help="path to email csv path")
+    parser.add_argument("-n", "--nrows", default=None, help="Number of rows to load from the email csv file")
+    parser.add_argument("-t", "--threshold", default=0.02, type=float, help="Threshold speciousness")
+    main(parser.parse_args())
