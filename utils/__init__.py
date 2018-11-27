@@ -50,7 +50,7 @@ class EmailFeatures(object):
             f3 = row["size"]
             # Get email address similarity score
             f4 = self.compute_similarity(row["from"], row["to"].split(";"))
-            f5 = 1 / len(row.content) if len(row.content) > 0 else np.inf
+            f5 = 1 / len(row.content) if len(row.content) > 0 else 1
             epoch = int(time.mktime(time.strptime(row.date, pattern)))
             # Make a temporary data frame to append to the main data frame
             tmp = pd.DataFrame([[epoch, f1, f2, f3, f4, f5]], columns=columns)
