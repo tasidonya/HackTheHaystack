@@ -4,22 +4,29 @@ import time
 import matplotlib.pyplot as plt
 
 
-class EmailFeatures(object):
+class UserName(object):
 
     def __init__(self, file_path):
+        pass
+
+
+class EmailFeatures(object):
+
+    def __init__(self, file_path, nrows=None):
         self.features = ["f1", "f2", "f3"]
         self.data = None
         self.file_path = file_path
-        self.get_email()
+        self.get_email(nrows=nrows)
         self.sort_data()
         self.normalise_data()
         self.calculate_combined_feature()
 
-    def get_email(self):
+    def get_email(self, nrows):
         print("Fetching data and computing features...")
         pattern = '%m/%d/%Y %H:%M:%S'
         columns = ["epoch"] + self.features
-        df = pd.read_csv(self.file_path)
+        df = pd.read_csv(self.file_path, nrows=nrows)
+        print(df.shape)
         df = df.where((pd.notnull(df)), None)
         df = df[df.activity == "Send"]  # Only keep emails which are sent (remove view and receive)
         users = df.user.unique()  # Get a list of unique user names
@@ -124,7 +131,7 @@ class EmailFeatures(object):
         """
         :return:
         """
-        print("Calculating combined feature")
+        print("Calculating combined feature...")
         for user, df in self.data.items():
             f_scores = []
             for _, row in df.iterrows():
@@ -138,9 +145,9 @@ class EmailFeatures(object):
 
 
 if __name__ == "__main__":
-    email_features = EmailFeatures("../data/haystack_email.csv")
+    email_features = EmailFeatures("../data/haystack_email.csv", nrows=1000)
     data = email_features.get()
-
+    quit()
     n = [df.shape[0] for df in data.values()]
     print(len([i for i in n if i > 9]))
     input("")
